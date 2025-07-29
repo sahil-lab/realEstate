@@ -6,7 +6,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
     Home, TrendingUp, Phone, MessageCircle, MapPin, DollarSign, Building,
     Users, Factory, TreePine, User, ChevronRight, ArrowRight, SkipForward,
-    Calendar, Heart, Bed, CreditCard, Wifi, Car, ShieldCheck, Zap, LucideIcon
+    Calendar, Heart, Bed, CreditCard, Wifi, Car, ShieldCheck, Zap, LucideIcon,
+    UserPlus, LogIn, Eye
 } from 'lucide-react';
 
 interface OnboardingAnswers {
@@ -51,7 +52,7 @@ interface Question {
     id: string;
     title: string;
     subtitle: string;
-    type: 'personal' | 'choice' | 'yesno' | 'multiple';
+    type: 'personal' | 'choice' | 'yesno' | 'multiple' | 'final';
     options?: (IconOption | BudgetOption | SimpleOption)[];
 }
 
@@ -261,14 +262,18 @@ const Onboarding: React.FC = () => {
                 { id: 'pool', label: 'Swimming Pool', icon: Users },
                 { id: 'garden', label: 'Garden/Green Space', icon: TreePine }
             ] as IconOption[]
+        },
+        {
+            id: 'final',
+            title: "Thank you for your preferences!",
+            subtitle: "What would you like to do next?",
+            type: 'final'
         }
     ];
 
     const handleNext = () => {
         if (currentQuestion < questions.length - 1) {
             setCurrentQuestion(currentQuestion + 1);
-        } else {
-            handleSubmit();
         }
     };
 
@@ -298,27 +303,50 @@ const Onboarding: React.FC = () => {
         }));
     };
 
-    const handleSubmit = async () => {
-        if (!auth.currentUser) return;
-
+    const handleCompleteOnboarding = async () => {
         setLoading(true);
         setError('');
 
         try {
-            const userRef = doc(db, 'realEstateUsers', auth.currentUser.uid);
-            await updateDoc(userRef, {
-                ...answers,
-                isOnboarded: true,
-                onboardedAt: serverTimestamp(),
-            });
+            // Save onboarding completion to localStorage
+            localStorage.setItem('bhargavi-onboarding-seen', 'true');
 
-            navigate('/');
+            // If user is authenticated, save to Firestore
+            if (auth.currentUser) {
+                const userRef = doc(db, 'realEstateUsers', auth.currentUser.uid);
+                await updateDoc(userRef, {
+                    ...answers,
+                    isOnboarded: true,
+                    onboardedAt: serverTimestamp(),
+                });
+            } else {
+                // Save to localStorage for guest users
+                localStorage.setItem('bhargavi-onboarding-data', JSON.stringify(answers));
+            }
+
+            // Move to final step
+            setCurrentQuestion(questions.length - 1);
         } catch (err: any) {
-            console.error('Error updating user profile:', err);
+            console.error('Error saving onboarding data:', err);
             setError('Failed to save your preferences. Please try again.');
         } finally {
             setLoading(false);
         }
+    };
+
+    const handleNavigateToLogin = () => {
+        localStorage.setItem('bhargavi-onboarding-seen', 'true');
+        navigate('/login');
+    };
+
+    const handleNavigateToRegister = () => {
+        localStorage.setItem('bhargavi-onboarding-seen', 'true');
+        navigate('/register');
+    };
+
+    const handleExploreAsGuest = () => {
+        localStorage.setItem('bhargavi-onboarding-seen', 'true');
+        navigate('/app');
     };
 
     const renderQuestion = () => {
@@ -369,6 +397,71 @@ const Onboarding: React.FC = () => {
                                     placeholder="WhatsApp number (optional)"
                                 />
                             </div>
+                        </div>
+                    </motion.div>
+                );
+
+            case 'final':
+                return (
+                    <motion.div
+                        key="final"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        className="text-center space-y-8"
+                    >
+                        <motion.div
+                            initial={{ scale: 0.8 }}
+                            animate={{ scale: 1 }}
+                            className="w-24 h-24 bg-gradient-to-r from-accent-gold to-primary-burgundy rounded-full flex items-center justify-center mx-auto mb-6"
+                        >
+                            <Heart className="w-12 h-12 text-white" />
+                        </motion.div>
+
+                        <div className="space-y-4 mb-8">
+                            <h3 className="text-xl text-gradient-gold">Perfect! We've noted your preferences</h3>
+                            <p className="text-subtle">Choose how you'd like to continue your property journey with us</p>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <motion.button
+                                whileHover={{ scale: 1.02 }}
+                                whileTap={{ scale: 0.98 }}
+                                onClick={handleNavigateToRegister}
+                                className="card-luxury p-6 text-center hover-lift"
+                            >
+                                <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-emerald-600 rounded-xl flex items-center justify-center mx-auto mb-3">
+                                    <UserPlus className="w-6 h-6 text-white" />
+                                </div>
+                                <h4 className="font-semibold text-gradient-gold mb-2">Create Account</h4>
+                                <p className="text-subtle text-sm">Save preferences & get personalized recommendations</p>
+                            </motion.button>
+
+                            <motion.button
+                                whileHover={{ scale: 1.02 }}
+                                whileTap={{ scale: 0.98 }}
+                                onClick={handleNavigateToLogin}
+                                className="card-luxury p-6 text-center hover-lift"
+                            >
+                                <div className="w-12 h-12 bg-gradient-to-r from-primary-burgundy to-secondary-burgundy rounded-xl flex items-center justify-center mx-auto mb-3">
+                                    <LogIn className="w-6 h-6 text-white" />
+                                </div>
+                                <h4 className="font-semibold text-gradient-gold mb-2">Sign In</h4>
+                                <p className="text-subtle text-sm">Already have an account? Welcome back!</p>
+                            </motion.button>
+
+                            <motion.button
+                                whileHover={{ scale: 1.02 }}
+                                whileTap={{ scale: 0.98 }}
+                                onClick={handleExploreAsGuest}
+                                className="card-luxury p-6 text-center hover-lift"
+                            >
+                                <div className="w-12 h-12 bg-gradient-to-r from-accent-gold to-primary-burgundy rounded-xl flex items-center justify-center mx-auto mb-3">
+                                    <Eye className="w-6 h-6 text-white" />
+                                </div>
+                                <h4 className="font-semibold text-gradient-gold mb-2">Explore First</h4>
+                                <p className="text-subtle text-sm">Browse properties & create account later</p>
+                            </motion.button>
                         </div>
                     </motion.div>
                 );
@@ -545,10 +638,14 @@ const Onboarding: React.FC = () => {
                 return answers.loanAssistance !== undefined;
             case 'amenities':
                 return true; // Optional question
+            case 'final':
+                return true; // Final screen, no validation needed
             default:
                 return true;
         }
     };
+
+    const totalQuestions = questions.length - 1; // Exclude final screen from count
 
     return (
         <div className="min-h-screen bg-animated-luxury relative overflow-hidden flex items-center justify-center py-8">
@@ -603,23 +700,25 @@ const Onboarding: React.FC = () => {
                     <p className="text-subtle text-lg">Your Gateway to Dream Properties</p>
                 </motion.div>
 
-                {/* Progress Bar */}
-                <div className="mb-8">
-                    <div className="flex justify-between items-center mb-4">
-                        <span className="text-subtle text-lg">Question {currentQuestion + 1} of {questions.length}</span>
-                        <span className="text-gradient-gold font-bold text-lg">
-                            {Math.round(((currentQuestion + 1) / questions.length) * 100)}%
-                        </span>
+                {/* Progress Bar - Only show for non-final questions */}
+                {currentQuestion < totalQuestions && (
+                    <div className="mb-8">
+                        <div className="flex justify-between items-center mb-4">
+                            <span className="text-subtle text-lg">Question {currentQuestion + 1} of {totalQuestions}</span>
+                            <span className="text-gradient-gold font-bold text-lg">
+                                {Math.round(((currentQuestion + 1) / totalQuestions) * 100)}%
+                            </span>
+                        </div>
+                        <div className="w-full bg-white/10 rounded-full h-2 overflow-hidden">
+                            <motion.div
+                                initial={{ width: 0 }}
+                                animate={{ width: `${((currentQuestion + 1) / totalQuestions) * 100}%` }}
+                                className="bg-gradient-to-r from-accent-gold to-primary-burgundy h-2 rounded-full shadow-luxury"
+                                transition={{ duration: 0.5, ease: "easeOut" }}
+                            />
+                        </div>
                     </div>
-                    <div className="w-full bg-white/10 rounded-full h-2 overflow-hidden">
-                        <motion.div
-                            initial={{ width: 0 }}
-                            animate={{ width: `${((currentQuestion + 1) / questions.length) * 100}%` }}
-                            className="bg-gradient-to-r from-accent-gold to-primary-burgundy h-2 rounded-full shadow-luxury"
-                            transition={{ duration: 0.5, ease: "easeOut" }}
-                        />
-                    </div>
-                </div>
+                )}
 
                 {/* Question Card */}
                 <motion.div
@@ -652,43 +751,45 @@ const Onboarding: React.FC = () => {
                         </AnimatePresence>
                     </div>
 
-                    {/* Navigation Buttons */}
-                    <div className="flex justify-between items-center mt-10">
-                        <motion.button
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            onClick={handleSkip}
-                            className="btn-outline-luxury px-6 py-3 text-sm md:text-base"
-                        >
-                            <SkipForward className="w-4 h-4 mr-2" />
-                            Skip
-                        </motion.button>
+                    {/* Navigation Buttons - Only show for non-final questions */}
+                    {currentQuestion < totalQuestions && (
+                        <div className="flex justify-between items-center mt-10">
+                            <motion.button
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                                onClick={handleSkip}
+                                className="btn-outline-luxury px-6 py-3 text-sm md:text-base"
+                            >
+                                <SkipForward className="w-4 h-4 mr-2" />
+                                Skip
+                            </motion.button>
 
-                        <motion.button
-                            whileHover={{ scale: canProceed() && !loading ? 1.05 : 1 }}
-                            whileTap={{ scale: canProceed() && !loading ? 0.95 : 1 }}
-                            onClick={handleNext}
-                            disabled={!canProceed() || loading}
-                            className="btn-luxury px-8 py-3 text-sm md:text-base disabled:opacity-50 disabled:cursor-not-allowed"
-                        >
-                            {loading ? (
-                                <div className="flex items-center space-x-2">
-                                    <div className="luxury-spinner w-4 h-4"></div>
-                                    <span>Saving...</span>
-                                </div>
-                            ) : currentQuestion === questions.length - 1 ? (
-                                <>
-                                    Complete Setup
-                                    <ArrowRight className="w-4 h-4 ml-2" />
-                                </>
-                            ) : (
-                                <>
-                                    Next
-                                    <ChevronRight className="w-4 h-4 ml-2" />
-                                </>
-                            )}
-                        </motion.button>
-                    </div>
+                            <motion.button
+                                whileHover={{ scale: canProceed() && !loading ? 1.05 : 1 }}
+                                whileTap={{ scale: canProceed() && !loading ? 0.95 : 1 }}
+                                onClick={currentQuestion === totalQuestions - 1 ? handleCompleteOnboarding : handleNext}
+                                disabled={!canProceed() || loading}
+                                className="btn-luxury px-8 py-3 text-sm md:text-base disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                {loading ? (
+                                    <div className="flex items-center space-x-2">
+                                        <div className="luxury-spinner w-4 h-4"></div>
+                                        <span>Saving...</span>
+                                    </div>
+                                ) : currentQuestion === totalQuestions - 1 ? (
+                                    <>
+                                        Complete
+                                        <ArrowRight className="w-4 h-4 ml-2" />
+                                    </>
+                                ) : (
+                                    <>
+                                        Next
+                                        <ChevronRight className="w-4 h-4 ml-2" />
+                                    </>
+                                )}
+                            </motion.button>
+                        </div>
+                    )}
                 </motion.div>
 
                 {/* Bottom Decoration */}

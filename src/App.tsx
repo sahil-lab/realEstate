@@ -19,8 +19,15 @@ function App() {
   const [user, setUser] = useState<User | null>(null);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
+  const [hasSeenOnboarding, setHasSeenOnboarding] = useState(false);
 
   useEffect(() => {
+    // Check if user has seen onboarding before
+    const onboardingSeen = localStorage.getItem('bhargavi-onboarding-seen');
+    if (onboardingSeen) {
+      setHasSeenOnboarding(true);
+    }
+
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setUser(user);
 
@@ -46,10 +53,10 @@ function App() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
+      <div className="min-h-screen flex items-center justify-center bg-animated-luxury">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-green-500 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading Bhargavi Real Estate...</p>
+          <div className="luxury-spinner w-16 h-16 mx-auto mb-4"></div>
+          <p className="text-subtle text-lg">Loading Bhargavi Real Estate...</p>
         </div>
       </div>
     );
@@ -67,21 +74,17 @@ function App() {
           {/* Public routes */}
           <Route
             path="/login"
-            element={user ? <Navigate to="/" replace /> : <Login />}
+            element={user ? <Navigate to="/app" replace /> : <Login />}
           />
           <Route
             path="/register"
-            element={user ? <Navigate to="/" replace /> : <Register />}
+            element={user ? <Navigate to="/app" replace /> : <Register />}
           />
 
-          {/* Protected routes */}
+          {/* Onboarding route - Default for new visitors */}
           <Route
             path="/onboarding"
-            element={
-              <PrivateRoute>
-                <Onboarding />
-              </PrivateRoute>
-            }
+            element={<Onboarding />}
           />
 
           {/* Admin routes */}
@@ -92,7 +95,7 @@ function App() {
                 {user && userProfile && hasAdminAccess(userProfile) ? (
                   <AdminDashboard user={user} userProfile={userProfile} />
                 ) : (
-                  <Navigate to="/" replace />
+                  <Navigate to="/app" replace />
                 )}
               </PrivateRoute>
             }
@@ -100,17 +103,38 @@ function App() {
 
           {/* Main app route */}
           <Route
-            path="/"
+            path="/app"
             element={
               user ? (
-                // Check if user needs onboarding
+                // Authenticated users - check if they need onboarding
                 userProfile && !userProfile.isOnboarded ? (
                   <Navigate to="/onboarding" replace />
                 ) : (
                   <LandingPage user={user} />
                 )
               ) : (
+                // Non-authenticated users see landing page
                 <LandingPage user={null} />
+              )
+            }
+          />
+
+          {/* Default route - Show onboarding first, then redirect based on status */}
+          <Route
+            path="/"
+            element={
+              !hasSeenOnboarding ? (
+                <Navigate to="/onboarding" replace />
+              ) : user ? (
+                // User has seen onboarding and is logged in
+                userProfile && !userProfile.isOnboarded ? (
+                  <Navigate to="/onboarding" replace />
+                ) : (
+                  <Navigate to="/app" replace />
+                )
+              ) : (
+                // User has seen onboarding but not logged in
+                <Navigate to="/app" replace />
               )
             }
           />
