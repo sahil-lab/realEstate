@@ -1,0 +1,539 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ===== ELITE REAL ESTATE DESIGN SYSTEM ===== */
+
+/* Premium Color Variables */
+:root {
+    --primary-burgundy: #800000;
+    --secondary-burgundy: #a52a2a;
+    --accent-gold: #ffd700;
+    --dark-red: #600000;
+    --light-red: #200000;
+    --pure-black: #000000;
+    --pure-white: #ffffff;
+    --off-white: #f8f8f8;
+    --soft-gray: #333333;
+    --medium-gray: #666666;
+    --light-gray: #cccccc;
+}
+
+/* Global Elite Styling */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+    font-size: 16px;
+}
+
+body {
+    font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-weight: 400;
+    line-height: 1.6;
+    color: var(--pure-white);
+    background: linear-gradient(135deg, var(--pure-black), var(--light-red));
+    overflow-x: hidden;
+    position: relative;
+}
+
+/* Premium Typography */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+}
+
+h1 {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 900;
+}
+
+h2 {
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 700;
+}
+
+h3 {
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 700;
+}
+
+/* Sophisticated Animations */
+@keyframes luxuryFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes floatAnimation {
+
+    0%,
+    100% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+@keyframes rotateGold {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: -1000px 0;
+    }
+
+    100% {
+        background-position: 1000px 0;
+    }
+}
+
+@keyframes pulse-slow {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.7;
+    }
+}
+
+@keyframes grow-line {
+    from {
+        width: 0;
+    }
+
+    to {
+        width: 100%;
+    }
+}
+
+/* Premium Button Styles */
+.btn-luxury {
+    background: linear-gradient(45deg, var(--primary-burgundy), var(--secondary-burgundy));
+    color: var(--pure-white);
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    box-shadow: 0 8px 25px rgba(128, 0, 0, 0.3);
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+}
+
+.btn-luxury::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.3), transparent);
+    transition: left 0.5s;
+}
+
+.btn-luxury:hover::before {
+    left: 100%;
+}
+
+.btn-luxury:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 15px 35px rgba(128, 0, 0, 0.4);
+}
+
+.btn-outline-luxury {
+    background: transparent;
+    color: var(--accent-gold);
+    border: 2px solid var(--accent-gold);
+    padding: 1rem 2rem;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+}
+
+.btn-outline-luxury:hover {
+    background: var(--accent-gold);
+    color: var(--pure-black);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(255, 215, 0, 0.3);
+}
+
+/* Premium Input Styles */
+.input-luxury {
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 215, 0, 0.3);
+    color: var(--pure-white);
+    padding: 1rem 1.5rem;
+    border-radius: 15px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.input-luxury:focus {
+    outline: none;
+    border-color: var(--accent-gold);
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.input-luxury::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+/* Elite Card Styles */
+.card-luxury {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    padding: 2rem;
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    position: relative;
+    overflow: hidden;
+}
+
+.card-luxury::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent-gold), var(--primary-burgundy), var(--accent-gold));
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.card-luxury:hover::before {
+    transform: scaleX(1);
+}
+
+.card-luxury:hover {
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: 0 25px 50px rgba(128, 0, 0, 0.3);
+    border-color: rgba(255, 215, 0, 0.4);
+}
+
+/* Gradient Text Effects */
+.text-gradient-gold {
+    background: linear-gradient(45deg, var(--accent-gold), #ffed4e);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.text-gradient-burgundy {
+    background: linear-gradient(45deg, var(--primary-burgundy), var(--secondary-burgundy));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Animated Background Gradients */
+.bg-animated-luxury {
+    background: linear-gradient(-45deg, var(--pure-black), var(--light-red), var(--primary-burgundy), var(--dark-red));
+    background-size: 400% 400%;
+    animation: gradient-shift 15s ease infinite;
+}
+
+@keyframes gradient-shift {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+/* Elite Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--pure-black);
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(var(--primary-burgundy), var(--accent-gold));
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(var(--accent-gold), var(--primary-burgundy));
+}
+
+/* Parallax and 3D Effects */
+.parallax-container {
+    perspective: 1000px;
+}
+
+.flip-card {
+    background-color: transparent;
+    width: 100%;
+    height: 400px;
+    transition: transform 0.8s;
+    transform-style: preserve-3d;
+    cursor: pointer;
+}
+
+.flip-card:hover {
+    transform: rotateY(180deg);
+}
+
+.flip-card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    transition: transform 0.8s;
+    transform-style: preserve-3d;
+}
+
+.flip-card-front,
+.flip-card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+}
+
+.flip-card-front {
+    background: linear-gradient(135deg, var(--pure-white), var(--off-white));
+    color: var(--soft-gray);
+}
+
+.flip-card-back {
+    background: linear-gradient(135deg, var(--primary-burgundy), var(--secondary-burgundy));
+    color: var(--pure-white);
+    transform: rotateY(180deg);
+}
+
+/* Premium Loading Spinner */
+.luxury-spinner {
+    width: 50px;
+    height: 50px;
+    border: 3px solid rgba(255, 215, 0, 0.3);
+    border-radius: 50%;
+    border-top-color: var(--accent-gold);
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Elite Form Styling */
+.form-luxury {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 25px;
+    padding: 3rem;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+}
+
+/* Stats Counter Animation */
+.stat-counter {
+    font-size: 3rem;
+    font-weight: 900;
+    color: var(--accent-gold);
+    text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+}
+
+/* Luxury Navigation */
+.nav-luxury {
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.9), rgba(128, 0, 0, 0.1));
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+}
+
+/* Hero Section Enhancements */
+.hero-luxury {
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.7), rgba(128, 0, 0, 0.3));
+    backdrop-filter: blur(5px);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-luxury::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="0.5" fill="%23ffd700" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+    pointer-events: none;
+}
+
+/* Floating Elements */
+.float-animation {
+    animation: floatAnimation 6s ease-in-out infinite;
+}
+
+/* Premium Hover Effects */
+.hover-lift {
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.hover-lift:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(128, 0, 0, 0.3);
+}
+
+/* Text Shimmer Effect */
+.text-shimmer {
+    background: linear-gradient(45deg, var(--pure-white), var(--accent-gold), var(--pure-white));
+    background-size: 200% auto;
+    color: transparent;
+    -webkit-background-clip: text;
+    background-clip: text;
+    animation: shimmer 3s linear infinite;
+}
+
+/* Elite Footer */
+.footer-luxury {
+    background: linear-gradient(135deg, var(--pure-black), var(--light-red));
+    position: relative;
+}
+
+.footer-luxury::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent-gold), transparent);
+}
+
+/* Responsive Enhancements */
+@media (max-width: 768px) {
+
+    .btn-luxury,
+    .btn-outline-luxury {
+        padding: 0.8rem 1.5rem;
+        font-size: 1rem;
+    }
+
+    .card-luxury {
+        padding: 1.5rem;
+    }
+
+    .form-luxury {
+        padding: 2rem;
+    }
+
+    h1 {
+        font-size: 2.5rem;
+    }
+
+    h2 {
+        font-size: 2rem;
+    }
+}
+
+/* Premium Selection Colors */
+::selection {
+    background: var(--accent-gold);
+    color: var(--pure-black);
+}
+
+::-moz-selection {
+    background: var(--accent-gold);
+    color: var(--pure-black);
+}
+
+/* Elite Focus States */
+*:focus {
+    outline: 2px solid var(--accent-gold);
+    outline-offset: 2px;
+}
+
+/* Luxury Utility Classes */
+.text-luxury {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+}
+
+.text-subtle {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.bg-glass {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.shadow-luxury {
+    box-shadow: 0 25px 50px rgba(128, 0, 0, 0.3);
+}
+
+.border-gold {
+    border: 1px solid var(--accent-gold);
+}
+
+.border-gradient {
+    border: 2px solid;
+    border-image: linear-gradient(45deg, var(--accent-gold), var(--primary-burgundy)) 1;
+}
